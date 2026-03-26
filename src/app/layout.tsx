@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "大学時代でやったこと100",
-  description: "大学時代に経験した100の出来事を、スワイプで振り返るパーソナル・アルバム。",
+  title: "大学時代でやりたいこと100",
+  description: "大学時代にやりたいこと100を、スワイプで振り返るパーソナル・アルバム。",
 };
 
 import { AuthProvider } from "@/context/AuthContext";

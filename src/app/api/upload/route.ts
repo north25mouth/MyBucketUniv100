@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     let finalExt = ext;
-    let finalBuffer = buffer;
+    let finalBuffer: any = buffer;
 
     if (!isVideo) {
       if (ext === '.heic') {

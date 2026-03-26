@@ -8,7 +8,7 @@ import {
   signInWithPopup, 
   signOut 
 } from "firebase/auth";
-import { auth, db } from "@/lib/firebase";
+import { getFirebaseAuth, getFirebaseDb } from "@/lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 interface AuthContextType {
@@ -25,6 +25,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const auth = getFirebaseAuth();
+    const db = getFirebaseDb();
     const unsubscribe = onAuthStateChanged(auth, async (currentUser: User | null) => {
       setUser(currentUser);
       
@@ -55,6 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
+    const auth = getFirebaseAuth();
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
@@ -64,6 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    const auth = getFirebaseAuth();
     try {
       await signOut(auth);
     } catch (error) {

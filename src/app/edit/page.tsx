@@ -227,12 +227,12 @@ export default function EditList() {
                     <video 
                       src={`${mediaMeta[item.id]?.src}?t=${Date.now()}`} 
                       autoPlay loop muted playsInline 
-                      className="w-full h-full object-cover" 
+                      className="w-full h-full object-contain sm:object-cover" 
                     />
                   ) : (
                     <>
                       <div 
-                        className="w-full h-full bg-cover bg-center"
+                        className="w-full h-full bg-contain bg-center bg-no-repeat sm:bg-cover"
                         style={{ backgroundImage: `url(${mediaMeta[item.id]?.src ? `${mediaMeta[item.id].src}?t=${Date.now()}` : item.image})` }} 
                       />
                       <button

@@ -206,13 +206,13 @@ export default function SwipeViewer() {
                       muted 
                       playsInline
                       onError={() => handleImageError(card.id)}
-                      className="w-full h-full object-cover" 
+                      className="w-full h-full object-contain sm:object-cover" 
                     />
                   ) : (
                     <img 
                       src={card.image || mediaMeta[card.id]?.src || `/photos/${card.id}.jpg`} 
                       onError={() => handleImageError(card.id)}
-                      className="w-full h-full object-cover" 
+                      className="w-full h-full object-contain sm:object-cover" 
                       alt={card.text} 
                       draggable={false}
                     />

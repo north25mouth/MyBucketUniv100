@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, LayoutGrid, UserCircle, CheckCircle2, X } from "lucide-react";
+import { ChevronRight, LayoutGrid, UserCircle, CheckCircle2, X, Heart } from "lucide-react";
 import Link from "next/link";
-import { my100List, TrackItem } from "@/data/my100list";
+import { my100List } from "@/data/my100list";
+import { useAuth } from "@/context/AuthContext";
+import { useTrackLike } from "@/hooks/useTrackLike";
 
 // Map all 100 tracks regardless of completion status
 const allTracks = my100List;
@@ -38,6 +40,7 @@ export default function SwipeViewer() {
   const [showList, setShowList] = useState(false);
   const [imageErrorMap, setImageErrorMap] = useState<Record<number, boolean>>({});
   const [mediaMeta, setMediaMeta] = useState<Record<number, { date: string, type: string, src: string }>>({});
+  const { user, signInWithGoogle } = useAuth();
 
   useEffect(() => {
     fetch('/api/photos/dates')
@@ -49,6 +52,16 @@ export default function SwipeViewer() {
   const activeIndex = page;
   const isFinished = activeIndex >= allTracks.length;
   const card = !isFinished ? allTracks[activeIndex] : null;
+  const { count, liked, busy, toggleLike } = useTrackLike(card?.id, user?.uid ?? null);
+
+  const handleLikeTap = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) {
+      await signInWithGoogle();
+      return;
+    }
+    await toggleLike();
+  };
 
   const paginate = (newDirection: number) => {
     const nextIndex = page + newDirection;
@@ -222,6 +235,34 @@ export default function SwipeViewer() {
                     <span className="font-extrabold text-lg tracking-widest">NO MEDIA</span>
                     <span className="text-sm mt-1 font-medium bg-white/40 px-3 py-1 rounded-full mt-3">/photos/{card.id}.*</span>
                   </div>
+                )}
+              </div>
+
+              {/* Like */}
+              <div
+                className="mt-3 flex items-center justify-center gap-2 pointer-events-auto"
+                onPointerDown={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={handleLikeTap}
+                  disabled={busy}
+                  className="flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 backdrop-blur-md border border-white/90 shadow-sm text-slate-700 hover:bg-white/90 disabled:opacity-60 transition-all active:scale-95"
+                  aria-label={liked ? "いいねを取り消す" : "いいねする"}
+                >
+                  <Heart
+                    className={`w-5 h-5 shrink-0 transition-colors ${
+                      liked ? "fill-rose-500 text-rose-500" : "text-slate-500"
+                    }`}
+                    strokeWidth={2}
+                  />
+                  <span className="font-black tabular-nums">{count}</span>
+                </button>
+                {!user && (
+                  <span className="text-xs font-bold text-slate-500 max-w-[9rem] leading-tight">
+                    タップでログインしていいね
+                  </span>
                 )}
               </div>
 
